@@ -12,7 +12,6 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"strings"
 	"sync"
 )
 
@@ -44,10 +43,10 @@ func (r *Reader) Addr() string {
 
 // FIXME: this will discard data if p isn't big enough to hold the
 // full message.
-func (r *Reader) Read(p []byte) (int, error) {
+func (r *Reader) Read() (string, error) {
 	msg, err := r.ReadMessage()
 	if err != nil {
-		return -1, err
+		return "", err
 	}
 
 	var data string
@@ -57,8 +56,7 @@ func (r *Reader) Read(p []byte) (int, error) {
 	} else {
 		data = msg.Full
 	}
-
-	return strings.NewReader(data).Read(p)
+	return data, nil
 }
 
 func (r *Reader) ReadMessage() (*Message, error) {
